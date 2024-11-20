@@ -27,10 +27,11 @@ loadingManager.onStart = () =>
 const textureLoader = new THREE.TextureLoader(loadingManager)
 
 const colorTexture = textureLoader.load('/textures/Stone_Floor/basecolor.png')
-colorTexture.center.x = 0.5
-colorTexture.center.y = 0.5
+// colorTexture.center.x = 0.5
+// colorTexture.center.y = 0.5
 colorTexture.repeat.y = 2
 colorTexture.wrapT = THREE.RepeatWrapping
+colorTexture.wrapS = THREE.RepeatWrapping
 // colorTexture.magFilter = THREE.NearestFilter
 // const heightTexture = textureLoader.load('public/textures/Stone_Floor/Stylized_Stone_Floor_010_height.png')
 // const normalTexture = textureLoader.load('/textures/door/normal.jpg')
