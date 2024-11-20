@@ -4,9 +4,44 @@ import { OrbitControls } from 'three/examples/jsm/Addons.js';
 const canvas = document.querySelector('canvas.webgl');
 const scene = new THREE.Scene();
 
+
+const loadingManager = new THREE.LoadingManager()
+
+loadingManager.onStart = () =>
+    {
+    console.log('loading started')
+    }
+    loadingManager.onLoad = () =>
+    {
+    console.log('loading finished')
+    }
+    loadingManager.onProgress = () =>
+    {
+    console.log('loading progressing')
+    }
+    loadingManager.onError = () =>
+    {
+    console.log('loading error')
+    }
+
+const textureLoader = new THREE.TextureLoader(loadingManager)
+
+const colorTexture = textureLoader.load('/textures/Stone_Floor/basecolor.png')
+colorTexture.center.x = 0.5
+colorTexture.center.y = 0.5
+colorTexture.repeat.y = 2
+colorTexture.wrapT = THREE.RepeatWrapping
+// colorTexture.magFilter = THREE.NearestFilter
+// const heightTexture = textureLoader.load('public/textures/Stone_Floor/Stylized_Stone_Floor_010_height.png')
+// const normalTexture = textureLoader.load('/textures/door/normal.jpg')
+// const ambientOcclusionTexture = textureLoader.load('/textures/door/ambientOcclusion.jpg')
+// const metalnessTexture = textureLoader.load('/textures/door/metalness.jpg')
+// const roughnessTexture = textureLoader.load('/textures/door/roughness.jpg')
+
+
 const sizes = {
     width: window.innerWidth,
-    height: window.innerHeight // Corrected here
+    height: window.innerHeight
 };
 
 const camera = new THREE.PerspectiveCamera(
@@ -15,53 +50,16 @@ const camera = new THREE.PerspectiveCamera(
 camera.position.z = 3;
 scene.add(camera);
 
-const count = 50
+const geometry = new THREE.BoxGeometry(1, 2, 1)
+const material = new THREE.MeshBasicMaterial({ map: colorTexture})
 
-const geometry = new THREE.BufferGeometry()
-
-// const positionsArray = new Float32Array([
-//     0,0,0,
-//     0,1,0,
-//     0,0,0,
-
-//     0,0,0,
-//     1/2, Math.sqrt(3)/2,0,
-//     0,0,0,
-
-//     0,0,0,
-//     Math.sqrt(2)/2,Math.sqrt(2)/2,0,
-//     0,0,0,
-
-//     0,0,0,
-//     Math.sqrt(3)/2,1/2,0,
-//     0,0,0,
-
-//     0,0,0,
-//     1,0,0,
-//     0,0,0,
-
-
-// ])
-
-const positionsArray = new Float32Array(count*3*3)
-
-for (let i = 0 ; i < count*3*3 ; i++){
-    positionsArray[i] = (Math.random() - 0.5) * 4
-     
-}
-
-
-console.log(positionsArray)
-
-const positionsAttribute = new THREE.BufferAttribute(positionsArray,3)
-
-geometry.setAttribute('position', positionsAttribute)
-
-const cGeometry = new THREE.Mesh(
+const mesh = new THREE.Mesh(
     geometry,
-    new THREE.MeshBasicMaterial({color: 0xeb6b34, wireframe: true})
+    material
 )
-scene.add(cGeometry);
+scene.add(mesh);
+
+
 
 const renderer = new THREE.WebGLRenderer({
     canvas: canvas,
@@ -70,6 +68,9 @@ const renderer = new THREE.WebGLRenderer({
 
 renderer.setSize(sizes.width, sizes.height);
 
+
+
+// EVENT LISTENERS
 window.addEventListener('resize', ()=>{
     // Sizes
     sizes.width = window.innerWidth
@@ -83,6 +84,8 @@ window.addEventListener('resize', ()=>{
     renderer.setSize(sizes.width, sizes.height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 })
+
+
 
 window.addEventListener('dblclick', ()=>{
     const fullscreenElement = document.fullscreenElement || document.webkitFullscreenElement
